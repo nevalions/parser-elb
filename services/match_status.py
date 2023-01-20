@@ -76,8 +76,8 @@ def get_match_status_online(m_id) -> str:
     url = base_url + 'euroleague/game-center/1/txt/E' + season_to_url + '/' + match_id_to_url
     # when you get url first time it shows empty webpage
     print('Trying to get match status online...')
-    req = requests.get(url, headers=headers)
-    time.sleep(random.uniform(0.1, 0.9))
+    requests.get(url, headers=headers)
+    time.sleep(random.uniform(0.4, 1.2))
     # problem solved by get url second time in one function. Maybe there is more beautiful solution?
     req2 = requests.get(url, headers=headers)
     src = req2.text
