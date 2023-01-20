@@ -79,8 +79,8 @@ def get_match_status_online(m_id) -> str:
     requests.get(url, headers=headers)
     time.sleep(random.uniform(0.4, 1.2))
     # problem solved by get url second time in one function. Maybe there is more beautiful solution?
-    req2 = requests.get(url, headers=headers)
-    src = req2.text
+    req = requests.get(url, headers=headers)
+    src = req.text
 
     return parse_match_index_page_for_status(src)
 
