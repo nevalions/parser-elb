@@ -1,5 +1,6 @@
 data/
 
+services/auth_data.py
 test_reg.py
 
 .idea/**/workspace.xml

@@ -1,7 +1,7 @@
 import json
 from pathlib import Path
 
-from services import match, check, load_dynamic_html, message
+from services import match, check, load_dynamic_html, message_print
 from services import load_href_from_json as load
 
 DATA_DIR = Path('data')
@@ -29,7 +29,7 @@ def main():
 
     # show user valid rounds in season
     rounds_in_season = load_dynamic_html.get_dynamic_number_of_rounds(season)
-    message.print_number_of_rounds_full(season, rounds_in_season)
+    message_print.print_number_of_rounds_full(season, rounds_in_season)
 
     while True:
         # webpage generates 4 fake rounds from regular season to playoffs
@@ -43,7 +43,7 @@ def main():
         # ask user to enter round number
         round_num = input('Round: ')
         try:
-            print(rounds_in_season)
+            # ???print(rounds_in_season)
             # check is it a valid round number
             if 0 < int(round_num) <= rounds_in_season and int(round_num) not in fake_rounds:
                 break

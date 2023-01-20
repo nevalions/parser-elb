@@ -8,3 +8,4 @@ BASE_URL = 'https://www.euroleaguebasketball.net/'
 match_id = '2022172'
 season = '2022'
 round_num = '20'
+
