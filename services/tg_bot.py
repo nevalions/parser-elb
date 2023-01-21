@@ -10,6 +10,8 @@ from aiogram.dispatcher import FSMContext
 from aiogram.utils import  executor
 from aiogram.types import Message, ReplyKeyboardRemove
 
+
+
 from services import load_dynamic_html, check, settings, match
 from services.auth_data import tg_token
 from services import load_href_from_json as load
@@ -33,18 +35,25 @@ class Form(StatesGroup):
 
 @dp.message_handler(commands=['start', 'help'])
 async def start_command(message: types.Message):
+    """
+    Telegram bot with aiogram, ask user season, round, match to get data.
+    It also makes all main checks is user messages are valid, if files are downloaded etc.
+    Finally, it can send file to telegram chat.
+    """
     await Form.enter_season.set()
+    # enter season year
     await message.answer(f'Hi! Enter a season year\n(from 2000 year to 2022): ')
 
 @dp.message_handler(state=Form.enter_season)
 async def process_season_is_valid(message: types.Message, state: FSMContext):
+    # checks is season year valid
     try:
         if int(message.text) not in range(2000, 2023):
             return await message.reply('Enter a valid season year')
     except Exception as ex:
         print(ex)
         return await message.reply('Enter a valid season year')
-
+    # save season year to memory
     async with state.proxy() as data:
         data['season'] = message.text
 
@@ -65,16 +74,17 @@ async def process_season_is_valid(message: types.Message, state: FSMContext):
         f'Final Four Semifinal: Round #{rounds_in_season - 1}\n'
         f'Final Four Final: Round #{rounds_in_season}\n\n'
         f"DON'T select FAKE rounds {fake_rounds[0]}, {fake_rounds[1]}, {fake_rounds[2]}, {fake_rounds[3]}")
-
+    # save max round and fake rounds for next checks
     async with state.proxy() as data:
         data['max_rounds'] = rounds_in_season
         data['fake_rounds'] = fake_rounds
-
+    # enter round number
     await Form.enter_round.set()
     await message.answer('Enter round number from list')
 
 @dp.message_handler(state=Form.enter_round)
 async def process_round_is_digit(message: types.Message, state: FSMContext):
+    # checks is round number valid
     async with state.proxy() as data:
         try:
             if int(message.text) > data['max_rounds'] or int(message.text) in data['fake_rounds']:
@@ -100,6 +110,7 @@ async def process_round_is_digit(message: types.Message, state: FSMContext):
 
 @dp.message_handler(state=Form.enter_match_id_of_round)
 async def process_round_is_valid(message: types.Message, state: FSMContext):
+    # checks is match ID in this round
     async with state.proxy() as data:
         try:
             if message.text not in data['list_ids']:
@@ -118,7 +129,7 @@ async def process_round_is_valid(message: types.Message, state: FSMContext):
 
     # parse match data from html file
     full_match_data = match.parse_match_index_page(data['m_id'], DATA_DIR_ABSOLUTE)
-    await message.answer(full_match_data)
+    # await message.answer(full_match_data)
 
     full_match_data_file_name = DATA_DIR_ABSOLUTE / f'Match_{data["m_id"]}_FULL_DATA.json'
     try:
@@ -137,9 +148,13 @@ async def process_round_is_valid(message: types.Message, state: FSMContext):
 @dp.message_handler(state=Form.send_match_data_file)
 async def process_round_is_valid(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
+        full_match_data_file_name = DATA_DIR_ABSOLUTE / f'Match_{data["m_id"]}_FULL_DATA.json'
+        file_to_send = str(full_match_data_file_name)
+        print(full_match_data_file_name)
         try:
             if message.text in ['yes', 'y']:
                 print('sending file')
+                await message.answer_document(open(full_match_data_file_name))
                 await state.finish()
             elif message.text in ['no', 'n']:
                 print('URL to download')
@@ -148,7 +163,7 @@ async def process_round_is_valid(message: types.Message, state: FSMContext):
                 return await message.reply('Enter a valid answer (y/n)')
         except Exception as ex:
             print(ex)
-            return await message.reply('Enter a valid answer (y/n)')
+            return await message.reply('Something goes wrong')
 #
 # @dp.message_handler(commands=['cancel', 'stop'])
 # async def cancel_handler(message: Message, state: FSMContext):
