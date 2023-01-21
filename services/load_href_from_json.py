@@ -68,7 +68,7 @@ def get_list_of_matches(season_year, round_number, data_dir):
         sys.exit(f'There is no JSON file with name: {json_file_to_open}')
 
     for match in list_of_matches:
-        m = f'Match from season #{season_year} round #{round_number} ID:{match["match_id"]}'
+        m = f'Season {season_year} Round №{round_number} Match ID: {match["match_id"]}'
         m_ids_list.append(m)
 
     print(*m_ids_list, sep='\n')
