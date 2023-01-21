@@ -19,6 +19,7 @@ def main():
     # check.is_season_json_exist(season, round_num, data_dir_absolute)
     # get_all_round_matches_index_page_from_json(season, round_num, data_dir_absolute)
     # get_one_match_index_page_from_json(match_id, season, round_num, data_dir_absolute)
+    get_list_of_matches(season, round_num, data_dir_absolute)
 
 
 def matches_index_page_from_json(json_file, data_dir):
@@ -56,6 +57,8 @@ def get_list_of_matches(season_year, round_number, data_dir):
     """
     match_href_file = f'season_{season_year}_round_{round_number}.json'
     json_file_to_open = data_dir / match_href_file
+    # returns list of fstrings with available match to select
+    m_ids_list = []
 
     try:
         # load data from season-round json file
@@ -65,9 +68,12 @@ def get_list_of_matches(season_year, round_number, data_dir):
         sys.exit(f'There is no JSON file with name: {json_file_to_open}')
 
     for match in list_of_matches:
-        print(f'Match from season #{season_year} round #{round_number} ID:{match["match_id"]}')
+        m = f'Match from season #{season_year} round #{round_number} ID:{match["match_id"]}'
+        m_ids_list.append(m)
 
-    return list_of_matches
+    print(*m_ids_list, sep='\n')
+
+    return list_of_matches, m_ids_list
 
 
 def get_all_round_matches_index_page_from_json(season_year, round_number, data_dir):
