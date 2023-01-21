@@ -101,7 +101,7 @@ def is_match_href_exist(m_id, season_year, round_number, data_dir):
 
     else:
         print(f'Index page for match {m_id} not found.')
-        print(f'Trying to download {m_id}')
+        print(f'Trying to download index page of match {m_id}')
         # If match index not exist, load it from URL in json file
         load.get_one_match_index_page_from_json(m_id, season_year, round_number, data_dir)
 
