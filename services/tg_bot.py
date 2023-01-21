@@ -1,14 +1,11 @@
 import json
-from pathlib import Path
 
 from aiogram import Bot, types
 from aiogram.dispatcher import  Dispatcher
-from aiogram.dispatcher.filters import Command, Text
 from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.dispatcher import FSMContext
 from aiogram.utils import  executor
-from aiogram.types import Message, ReplyKeyboardRemove
 
 
 
@@ -16,7 +13,6 @@ from services import load_dynamic_html, check, settings, match
 from services.auth_data import tg_token
 from services import load_href_from_json as load
 
-# DATA_DIR = Path('data')
 DATA_DIR_ABSOLUTE = settings.DATA_DIR_ABSOLUTE
 
 bot = Bot(token=tg_token)
@@ -36,8 +32,8 @@ class Form(StatesGroup):
 @dp.message_handler(commands=['start', 'help'])
 async def start_command(message: types.Message):
     """
-    Telegram bot with aiogram, ask user season, round, match to get data.
-    It also makes all main checks is user messages are valid, if files are downloaded etc.
+    Telegram bot with aiogram, asks user season, round, match to get data.
+    It also makes all main checks: ares user messages are valid, if files are generated etc.
     Finally, it can send file to telegram chat.
     """
     await Form.enter_season.set()
@@ -149,7 +145,6 @@ async def process_round_is_valid(message: types.Message, state: FSMContext):
 async def process_round_is_valid(message: types.Message, state: FSMContext):
     async with state.proxy() as data:
         full_match_data_file_name = DATA_DIR_ABSOLUTE / f'Match_{data["m_id"]}_FULL_DATA.json'
-        file_to_send = str(full_match_data_file_name)
         print(full_match_data_file_name)
         try:
             if message.text in ['yes', 'y']:
@@ -164,21 +159,8 @@ async def process_round_is_valid(message: types.Message, state: FSMContext):
         except Exception as ex:
             print(ex)
             return await message.reply('Something goes wrong')
-#
-# @dp.message_handler(commands=['cancel', 'stop'])
-# async def cancel_handler(message: Message, state: FSMContext):
-#     """
-#     Allow user to cancel any action
-#     """
-#     current_state = await state.get_state()
-#     if current_state is None:
-#         return
-#
-#     await state.reset_state()
-#     await message.answer(
-#         "Cancelled.",
-#         reply_markup=ReplyKeyboardRemove(),
-#     )
+
+#TODO make some text design
 
 if __name__ == '__main__':
     main()
