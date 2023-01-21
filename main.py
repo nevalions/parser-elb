@@ -56,7 +56,7 @@ def main():
     # check if file already was generated
     check.is_season_json_exist(season, round_num, DATA_DIR_ABSOLUTE)
     # show user list of matches with IDs to select
-    load.get_list_of_matches(season, round_num, DATA_DIR_ABSOLUTE)
+    print(*load.get_list_of_matches(season, round_num, DATA_DIR_ABSOLUTE)[2], sep='\n')
 
     # ask user to enter match ID
     match_id = input('Match ID: ')
