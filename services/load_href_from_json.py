@@ -19,7 +19,7 @@ def main():
     # check.is_season_json_exist(season, round_num, data_dir_absolute)
     # get_all_round_matches_index_page_from_json(season, round_num, data_dir_absolute)
     # get_one_match_index_page_from_json(match_id, season, round_num, data_dir_absolute)
-    get_list_of_matches(season, round_num, data_dir_absolute)
+    # get_list_of_matches(season, round_num, data_dir_absolute)
 
 
 def matches_index_page_from_json(json_file, data_dir):
@@ -73,9 +73,6 @@ def get_list_of_matches(season_year, round_number, data_dir):
         m_string = f'Season {season_year} Round №{round_number} Match ID: {match["match_id"]}'
         m_ids_list.append(match['match_id'])
         m_ids_fstring_list.append(m_string)
-
-    #TODO in main file print list of matches, not in func
-    # print(*m_ids_fstring_list, sep='\n')
 
     return list_of_matches, m_ids_list, m_ids_fstring_list
 
