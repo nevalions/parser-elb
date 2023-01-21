@@ -59,21 +59,25 @@ def get_list_of_matches(season_year, round_number, data_dir):
     json_file_to_open = data_dir / match_href_file
     # returns list of fstrings with available match to select
     m_ids_list = []
+    m_ids_fstring_list = []
 
     try:
         # load data from season-round json file
         with open(json_file_to_open, 'r') as file:
             list_of_matches = json.load(file)
+            sorted_list_of_matches_by_id = sorted(list_of_matches, key=lambda n: int(n['match_id']))
     except FileNotFoundError:
         sys.exit(f'There is no JSON file with name: {json_file_to_open}')
 
-    for match in list_of_matches:
-        m = f'Season {season_year} Round №{round_number} Match ID: {match["match_id"]}'
-        m_ids_list.append(m)
+    for match in sorted_list_of_matches_by_id:
+        m_string = f'Season {season_year} Round №{round_number} Match ID: {match["match_id"]}'
+        m_ids_list.append(match['match_id'])
+        m_ids_fstring_list.append(m_string)
 
-    print(*m_ids_list, sep='\n')
+    #TODO in main file print list of matches, not in func
+    # print(*m_ids_fstring_list, sep='\n')
 
-    return list_of_matches, m_ids_list
+    return list_of_matches, m_ids_list, m_ids_fstring_list
 
 
 def get_all_round_matches_index_page_from_json(season_year, round_number, data_dir):
